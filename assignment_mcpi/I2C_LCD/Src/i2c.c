@@ -1,0 +1,25 @@
+/*
+ * i2c.c
+ *
+ *  Created on: 29-Mar-2026
+ *      Author: sunbeam
+ */
+
+
+#include"i2c.h"
+void i2c_init(void)
+{
+	RCC->AHB1ENR |= RCC_AHB1ENR_GPIOBEN;
+	GPIOB->MODER |= BV( 2*6+1)|BV(2*7+1);// PB6 PB7 MODER SETTING OUTPUT 1 FOR PIN 13 ,15
+	GPIOB->MODER &= ~(BV(2*6) | BV(2*7)); // MODER==ZERO FOR 12 & 14
+	GPIOB->AFR[0] = (4 << (4*6)) | BV(4<< (4*7)); //ALTERNATE FUNCTION PB6 AND PB7 SCL AND SDA EACH PIN HAVE 4 BITS
+	GPIOB->PUPDR &= ~(BV(2*6+1) | BV(2*7+1) | BV(2*6) | BV(2*7)); //NO PULL UP NO PULL DOWN
+	GPIOB->OTYPER |= BV(6)|BV(7); // OUTPUT OPEN DRAIN
+
+	RCC-> APB1ENR |= RCC_APB1ENR_I2C1EN; // ENABLE OF I2C1
+	I2C1 -> CR1 |= I2C_CR1_SWRST;
+	I2C1->CR1 = 0;
+
+
+
+}
